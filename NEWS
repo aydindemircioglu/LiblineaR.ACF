@@ -1,0 +1,159 @@
+Note: In this file, LiblineaR refers to this R package, while LIBLINEAR refers to the original C/C++ library.
+
+1.94-2: 2015/01/30
+	1. Cleaned DESCRIPTION
+
+	2. library(SparseM) replaced by 'require' or 'requireNamespace' as appropriate.
+
+1.94-1: 2015/01/30
+	1. Upgraded to LIBLINEAR version 1.94, including support vector *regression*
+		- argument labels of function LiblineaR was renamed as target. The old naming is still accepted with a warning
+		- argument type of function LiblineaR may take extra values (11,12,13)
+		- extra argument svr_eps of function LiblineaR for the tolerance of regression loss
+		- if class labels are -1 and 1, ensure that positive decision values represent the class 1
+		- enriched examples, with cases of regression
+
+	2. Fix CITATION file format to satisfy CRAN requirements
+
+	3. Cleaning and reformatting of man pages
+
+	4. Fixing a bug in class labels ordering 
+	
+1.80-11: 2014/09/18
+	1. Refactored C code in order to facilitate upgrades of LIBLINEAR.
+	
+	2. Fix memory leak in predictLinear (the buffer x wasn't freed)
+	
+1.80-10: 2014/09/14
+	1. Shortened examples runtime.
+	
+	2. Uniformized notations in DESCRIPTION file for LiblineaR (this package) and LIBLINEAR (the C/C++ library wrapped by this package). 
+
+1.80-9: 2014/09/12
+	1. Replaced all expressions: 
+
+		rand()%(a-b); 
+	by 
+
+		GetRNGstate();
+		(int) (unif_rand()*(a - b))%(a - b);
+		PutRNGstate();
+
+	in linear.cpp, where a and b might take different values.
+
+1.80-8: 2014/09/11
+
+	1. Corrected a bug in memory allocation for sparse matrices:
+		src/trainLinear.c
+
+		These changes are to be credited to Christian Wolf.
+
+	2. Added a PACKAGE argument to speed up call to .C(...):
+		R/LiblineaR.R
+		R/predict.R
+
+1.80-7: 2013/06/24
+
+	1. Modification of the following files in order to support sparse matrices:
+		R/LiblineaR.R
+		R/predict.R
+		src/predictLinear.c 
+		src/trainLinear.c
+
+		These changes are mainly to be credited to Kai-Hsiang Hsu, from the Department of Computer Science of the National Taiwan University.
+
+	2. Addition of examples to reflect the use of sparse matrices in the following file:
+		man/LiblineaR.Rd
+
+1.80-6: 2013/03/26
+	
+	1. Corrected a memory mapping bug in predictLinear.c
+
+1.80-5: 2013/03/25
+
+	1. Suppress printing to stdout in linear.cpp, tron.cpp
+	
+	2. Suppress the use of exit(1); in predictLinear.c
+
+	3. Correct a bug when retrieving weights from C to R for multi-class models
+ 
+1.80-4: 2011/04/21
+
+	1. Correct bugs in linear.cpp (update of solve_l1r_l2_svc and solve_l1r_lr)
+
+1.80-3: 2011/04/20
+	
+	1. Add:
+
+	extern "C" 
+
+	before each function below :
+
+	//
+	// Interface function
+	//
+	
+	in linear.cpp
+
+	2. Suppress useless functions:
+
+	- save_model
+	- load_model
+	
+	in:
+	
+	linear.cpp
+	linear.h	
+
+	3. change all "fprintf" into Rprintf in :
+	linear.cpp
+	trainLinear.c
+	predictLinear.c
+
+	4. change:
+
+	#define Malloc(type,n) (type *)malloc((n)*sizeof(type)) 
+
+	into 
+
+	#define Malloc(type,n) (type *)Calloc(n,type)
+
+	in:
+	trainLinear.c
+	linear.cpp
+
+	5. replace all the malloc((n)*sizeof(type)) by Calloc(n,type) in predictLinear.c
+
+	5. replace all the realloc(*p,size) by Realloc(*p,n,type) in linear.cpp
+
+	7. replace all free() by Free() in:
+
+	trainLinear.c
+	predictLinear.c
+	linear.cpp
+
+	8. Add
+	
+	#include <R.h>
+	#include <Rinternals.h>
+	#include <R_ext/Rdynload.h>
+	
+	in linear.cpp
+
+1.80-2: 2011/04/12
+
+	1. Incorporate changes from LIBLINEAR versions 1.51 to 1.80:
+		- Use set_print_string_function to set the print function
+		- Add free_model_content and free_and_destroy_model functions (avoid memory problem if users declare a model variable)
+		- Add check_probability_model (consistent with libsvm)
+		- A new solver: coordinate descent for dual logistic regression
+		- New optimization method for l1-regularized logistic regression
+		- linear.cpp: 
+			* Use 1-norm stopping condition for l1-regularized solvers 
+			* newton_iter < l/10 replaced by newton_iter <= l/10 in l2r_lr_dual (for l < 10)
+		
+	2. predict.LiblineaR function can return additional information:
+		- probabilities (only for logistic regression models)
+		- decision values
+
+
