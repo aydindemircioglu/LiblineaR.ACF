@@ -56,7 +56,7 @@
 #'   between regularization and correct classification on \code{data}. It can be
 #'   seen as the inverse of a regularization constant. See information on the
 #'   'C' constant in details below. A usually good baseline heuristics to tune
-#'   this constant is provided by the \code{heuristicC} function of this
+#'   this constant is provided by the \code{heuristicC} function in the LiblineaR
 #'   package.
 #' @param epsilon set tolerance of termination criterion for optimization.
 #'   If \code{NULL}, the LIBLINEAR defaults are used, which are:
@@ -96,11 +96,9 @@
 #'   on \code{data} is performed to assess the quality of the model via a
 #'   measure of the accuracy. Note that this metric might not be appropriate if
 #'   classes are largely unbalanced. Default is 0.
-#' @param acf if \code{acf} is \code{TRUE} (default), the adaptive coordinate frequencies strategy is turned on.
-#'   if the parameter is \code{FALSE} then the random strategy of LIBLINEAR is used.    
-#' @param change_rate XXX
-#' @param pref_min XXX
-#' @param pref_max XXX
+#' @param change_rate learning rate of the preference adaptation, default is 0.2
+#' @param pref_min lower bound on the preference adaptation, default is 1/20
+#' @param pref_max upper bound on the preference adaptation, default is 20
 #' @param max_iter the maximum number of iterations, default (from original LIBLINEAR code) is 1000.
 #' @param verbose if \code{TRUE}, information are printed. Default is
 #'   \code{FALSE}.
@@ -133,7 +131,7 @@
 #' 
 #' @note Classification models usually perform better if each dimension of the data is first centered and scaled.
 #' 
-#' @seealso \code{\link{predict.LiblineaR.ACF}}, \code{\link{heuristicC}}
+#' @seealso \code{\link{predict.LiblineaR.ACF}}, \code{\link{LiblineaR::heuristicC}}
 #' 
 #' @examples
 #' data(iris)
@@ -257,7 +255,7 @@
 
 ### Implementation ####
 LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL, bias=TRUE, wi=NULL, cross=0, 
-    acf = TRUE, change_rate = 0.2, pref_min = 0.05, pref_max = 20.0, max_iter = 1000, verbose=FALSE, ...) {
+    change_rate = 0.2, pref_min = 0.05, pref_max = 20.0, max_iter = 1000, verbose=FALSE, ...) {
 	# <Arg preparation>
   
   if(sparse <- inherits(data, "matrix.csr")){
@@ -393,7 +391,7 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL
 	if (pref_max <= 0) {
         stop ("pref_max must be positive!")
     }
-    if (pref_min > pref_max) {
+    if (pref_min >= pref_max) {
         stop ("pref_max must be greater than pref_min!")
     }
 	if (change_rate <= 0) {
@@ -432,7 +430,6 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL
             as.integer(max_iter),
 			
 			# acf stuff
-			as.integer(acf),
 			as.double(change_rate),
 			as.double(pref_min),
 			as.double(pref_max),

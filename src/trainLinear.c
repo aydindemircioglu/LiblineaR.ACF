@@ -16,7 +16,7 @@ void print_null(const char *s) {}
 
 void setup_params(int *type, double *cost, double *epsilon, double* svr_eps, int *nrWi, double *Wi, int *WiLabels, int *cross, int *verbose);
 void setup_problem(double *X, double *Y, int *nbSamples, int *nbDim, int *sparse, int *rowindex, int *colindex, 
-                 double *bi, int *max_iter, int *acf, double *change_rate, double *pref_min, double *pref_max, int *verbose);
+                 double *bi, int *max_iter, double *change_rate, double *pref_min, double *pref_max, int *verbose);
 double do_cross_validation();
 
 struct feature_node *x_space;
@@ -35,12 +35,12 @@ int nr_fold;
  */
 void trainLinear(double *W_ret, int* labels_ret, double *X, double *Y, int *nbSamples, int *nbDim, int *sparse, int *rowindex, int *colindex, 
                  double *bi, int *type, double *cost, double *epsilon, double* svr_eps, int *nrWi, double *Wi, int *WiLabels, int *cross, 
-                 int *max_iter, int *acf, double *change_rate, double *pref_min, double *pref_max, int *verbose)
+                 int *max_iter, double *change_rate, double *pref_min, double *pref_max, int *verbose)
 {
 	const char *error_msg;
 	
 	setup_params(type, cost, epsilon, svr_eps, nrWi, Wi, WiLabels, cross, verbose);
-	setup_problem(X, Y, nbSamples, nbDim, sparse, rowindex, colindex, bi, max_iter, acf, change_rate, pref_min, pref_max, verbose);
+	setup_problem(X, Y, nbSamples, nbDim, sparse, rowindex, colindex, bi, max_iter, change_rate, pref_min, pref_max, verbose);
 
 	if(*verbose)
 		Rprintf("SETUP CHECK\n");
@@ -215,7 +215,7 @@ void setup_params(int *type, double *cost, double *epsilon, double* svr_eps, int
  *
  */
 void setup_problem(double *X, double *Y, int *nbSamples, int *nbDim, int *sparse, int *rowindex, int *colindex, 
-                 double *bi, int *max_iter, int *acf, double *change_rate, double *pref_min, double *pref_max, int *verbose)
+                 double *bi, int *max_iter, double *change_rate, double *pref_min, double *pref_max, int *verbose)
 {
 	int i, j, k, max_index;
 	i=j=k=0;
@@ -305,7 +305,6 @@ void setup_problem(double *X, double *Y, int *nbSamples, int *nbDim, int *sparse
     
     //take care of acf parameter
 	prob.max_iter = *max_iter;
-    prob.acf = *acf;
     prob.pref_max = *pref_max;
     prob.pref_min = *pref_min;
     prob.change_rate = *change_rate;

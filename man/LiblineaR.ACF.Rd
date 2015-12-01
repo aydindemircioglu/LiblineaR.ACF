@@ -5,7 +5,7 @@
 \title{Linear predictive models estimation based on the LIBLINEAR C/C++ Library.}
 \usage{
 LiblineaR.ACF(data, target, type = 0, cost = 1, epsilon = 0.01,
-  svr_eps = NULL, bias = TRUE, wi = NULL, cross = 0, acf = TRUE,
+  svr_eps = NULL, bias = TRUE, wi = NULL, cross = 0,
   change_rate = 0.2, pref_min = 0.05, pref_max = 20, max_iter = 1000,
   verbose = FALSE, ...)
 }
@@ -98,14 +98,11 @@ on \code{data} is performed to assess the quality of the model via a
 measure of the accuracy. Note that this metric might not be appropriate if
 classes are largely unbalanced. Default is 0.}
 
-\item{acf}{if \code{acf} is \code{TRUE} (default), the adaptive coordinate frequencies strategy is turned on.
-if the parameter is \code{FALSE} then the random strategy of LIBLINEAR is used.}
+\item{change_rate}{learning rate of the preference adaptation, default is 0.2}
 
-\item{change_rate}{XXX}
+\item{pref_min}{lower bound on the preference adaptation, default is 1/20}
 
-\item{pref_min}{XXX}
-
-\item{pref_max}{XXX}
+\item{pref_max}{upper bound on the preference adaptation, default is 20}
 
 \item{max_iter}{the maximum number of iterations, default (from original LIBLINEAR code) is 1000.}
 

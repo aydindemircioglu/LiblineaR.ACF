@@ -802,11 +802,11 @@ static void solve_l2r_l1l2_svc(
 	double C, d, G;
 	double *QD = new double[l];
 	int max_iter = prob->max_iter;
-	
+/*	
 	Rprintf ("maxiter: %d\n", max_iter);
 	Rprintf ("prob->pref_min: %f\n", prob->pref_min);
 	Rprintf ("prob->pref_max: %f\n", prob->pref_max);
-	Rprintf ("prob->change_rate: %f\n", prob->change_rate);
+	Rprintf ("prob->change_rate: %f\n", prob->change_rate);*/
 	
 	int *index = new int[2*l];
 	double *alpha = new double[l];
