@@ -20,3 +20,4 @@ webpage/**
 inst/doc
 *.dllsymbols.rds
 *.tar.gz
+*-Ex.*

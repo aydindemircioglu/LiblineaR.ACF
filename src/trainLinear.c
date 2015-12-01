@@ -304,7 +304,7 @@ void setup_problem(double *X, double *Y, int *nbSamples, int *nbDim, int *sparse
 		prob.n=max_index;
     
     //take care of acf parameter
-    prob.max_iter = *max_iter;
+	prob.max_iter = *max_iter;
     prob.acf = *acf;
     prob.pref_max = *pref_max;
     prob.pref_min = *pref_min;
