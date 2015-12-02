@@ -4,16 +4,19 @@
 #' 
 #' @description
 #' \code{LiblineaR.ACF} is a modification of the LiblineaR package that
-sion. We consider general CD with non-uniform selection of coordinates.
-Instead of fixing selection frequencies beforehand we propose an online
-adaptation mechanism for this important parameter, called the adaptive
-coordinate frequencies (ACF) method. 
-Notice that ACF is implemented with L1- or L2-regularized L2-loss support 
-vector classification only. The other options of LiblineaR were not touched
-
-#' L2-regularized L1-loss support vector classification and multi-class support 
-#' vector classification. The implementation is based on the LIBLINEAR C/C++ 
-#' library for machine learning.
+#' uses the idea of adaptive coordinate frequencies (ACF) method.
+#' Solving the linear SVM problem with coordinate descent
+#' is very efficient and is implemented in one of the most often used packages,
+#' LIBLINEAR (available at http://www.csie.ntu.edu.tw/~cjlin/liblinear). 
+#' It has been shown that the uniform selection of coordinates can be 
+#' accelerated by using an online adaptation of coordinate frequencies (ACF).
+#' This package implements ACF and is based on LIBLINEAR as well as
+#' the LiblineaR package (https://cran.r-project.org/package=LiblineaR).
+#' It currently supports L2-regularized L1-loss as well as L2-loss linear SVM. 
+#' Similar to LIBLINEAR multi-class classification (one-vs-the rest, and 
+#' Crammer & Singer method) and cross validation for model selection is 
+#' supported. The training of the models based on ACF is much faster than 
+#' standard LIBLINEAR on many problems.
 #' 
 #' @details
 #' For details for the implementation of LIBLINEAR, see the README file of the
@@ -38,14 +41,9 @@ vector classification only. The other options of LiblineaR were not touched
 #'   \describe{
 #'     \item{for multi-class classification}{
 #'       \itemize{
-#'         \item 0 -- L2-regularized logistic regression (primal)
 #'         \item 1 -- L2-regularized L2-loss support vector classification (dual)
-#'         \item 2 -- L2-regularized L2-loss support vector classification (primal)
 #'         \item 3 -- L2-regularized L1-loss support vector classification (dual)
 #'         \item 4 -- support vector classification by Crammer and Singer
-#'         \item 5 -- L1-regularized L2-loss support vector classification
-#'         \item 6 -- L1-regularized logistic regression
-#'         \item 7 -- L2-regularized logistic regression (dual)
 #'       }
 #'     }
 #'   }
@@ -59,8 +57,7 @@ vector classification only. The other options of LiblineaR were not touched
 #' @param epsilon set tolerance of termination criterion for optimization.
 #'   If \code{NULL}, the LIBLINEAR defaults are used, which are:
 #'   \describe{
-#'     \item{if \code{type} is 0, 2, 5 or 6}{\code{epsilon}=0.01}
-#'     \item{if \code{type} is 1, 3, 4, 7, 12 or 13}{\code{epsilon}=0.1}
+#'     \item{if \code{type} is 1, 3 or 4}{\code{epsilon}=0.1}
 #'   }
 #'   
 #'   % Watch out, below: in fact, \eqn{LaTeX}{ascii} is counter-intuitive.
@@ -267,10 +264,10 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL
 									"", "", "",
 									"L2-regularized L2-loss support vector regression (primal)", "L2-regularized L2-loss support vector regression (dual)", "L2-regularized L1-loss support vector regression (dual)")
 	typesLabels = gsub("[()]","",typesLabels)
-	typesCodes = c("L2R_LR", "L2R_L2LOSS_SVC_DUAL", "L2R_L2LOSS_SVC", "L2R_L1LOSS_SVC_DUAL",
-								 "MCSVM_CS", "L1R_L2LOSS_SVC", "L1R_LR", "L2R_LR_DUAL",
+	typesCodes = c("", "L2R_L2LOSS_SVC_DUAL", "", "L2R_L1LOSS_SVC_DUAL",
+								 "MCSVM_CS", "", "", "",
 								 "", "", "",
-								 "L2R_L2LOSS_SVR", "L2R_L2LOSS_SVR_DUAL", "L2R_L1LOSS_SVR_DUAL")
+								 "", "", "")
 	types=ifelse(typesCodes=="", "", paste0(typesLabels, " (", typesCodes, ")"))
 	if(!type %in% (which(types!="")-1))
 		stop("Unknown model type ",type,". Expecting one of: ", paste(which(types!="")-1, collapse=", "))

@@ -795,7 +795,7 @@ static void solve_l2r_l1l2_svc(
 	const problem *prob, double *w, double eps, 
 	double Cp, double Cn, int solver_type)
 {
-	Rprintf ("solve_l2r_l1l2_svc\n");
+    //Rprintf ("solve_l2r_l1l2_svc\n");
 	int l = prob->l;
 	int w_size = prob->n;
 	int i, s, iter = 0;
