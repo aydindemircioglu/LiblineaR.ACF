@@ -32,8 +32,9 @@ compile.R
 compile.R
 extra
 mytest
-*-Ex.pdf
-*-Ex.timings
+.*-Ex.pdf
+.*-Ex.timings
 news20.binary
 test.R
 
+README.md

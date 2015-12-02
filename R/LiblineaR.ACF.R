@@ -1,20 +1,25 @@
 ### Documentation ####
-#' Linear predictive models estimation based on the LIBLINEAR C/C++ Library.
+#' Linear predictive models estimation with Online Adaptation of Coordinate 
+#' Frequencies based on the LIBLINEAR C/C++ Library.
 #' 
 #' @description
-#' \code{LiblineaR} allows the estimation of predictive linear models for 
-#' classification and regression, such as L1- or L2-regularized logistic 
-#' regression, L1- or L2-regularized L2-loss support vector classification, 
+#' \code{LiblineaR.ACF} is a modification of the LiblineaR package that
+sion. We consider general CD with non-uniform selection of coordinates.
+Instead of fixing selection frequencies beforehand we propose an online
+adaptation mechanism for this important parameter, called the adaptive
+coordinate frequencies (ACF) method. 
+Notice that ACF is implemented with L1- or L2-regularized L2-loss support 
+vector classification only. The other options of LiblineaR were not touched
+
 #' L2-regularized L1-loss support vector classification and multi-class support 
-#' vector classification. It also supports L2-regularized support vector regression 
-#' (with L1- or L2-loss). The estimation of the models is particularly fast as 
-#' compared to other libraries. The implementation is based on the LIBLINEAR C/C++ 
+#' vector classification. The implementation is based on the LIBLINEAR C/C++ 
 #' library for machine learning.
 #' 
 #' @details
 #' For details for the implementation of LIBLINEAR, see the README file of the
 #' original c/c++ LIBLINEAR library at
 #' \url{http://www.csie.ntu.edu.tw/~cjlin/liblinear}.
+#' The ACF code can be found 
 #' 
 #' @param data 	a nxp data matrix. Each row stands for an example (sample,
 #'   point) and each column stands for a dimension (feature, variable). A sparse
@@ -41,13 +46,6 @@
 #'         \item 5 -- L1-regularized L2-loss support vector classification
 #'         \item 6 -- L1-regularized logistic regression
 #'         \item 7 -- L2-regularized logistic regression (dual)
-#'       }
-#'     }
-#'     \item{for regression}{
-#'       \itemize{
-#'         \item 11 -- L2-regularized L2-loss support vector regression (primal)
-#'         \item 12 -- L2-regularized L2-loss support vector regression (dual)
-#'         \item 13 -- L2-regularized L1-loss support vector regression (dual)
 #'       }
 #'     }
 #'   }
@@ -125,13 +123,15 @@
 #' \url{http://www.csie.ntu.edu.tw/~cjlin/liblinear}
 #' }
 #' 
-#' @author Thibault Helleputte \email{thibault.helleputte@@dnalytics.com} and\cr
+#' @author Aydin Demircioglu \email{aydin.demircioglu@@ini.rub.de}
+#'   Based on LiblineaR package by Thibault Helleputte \email{thibault.helleputte@@dnalytics.com} and\cr
 #'   Pierre Gramme \email{pierre.gramme@@dnalytics.com}.\cr 
 #'   Based on C/C++-code by Chih-Chung Chang and Chih-Jen Lin
+#'   Based on C/C++-code by Tobias Glasmachers and Urun Dogan
 #' 
 #' @note Classification models usually perform better if each dimension of the data is first centered and scaled.
 #' 
-#' @seealso \code{\link{predict.LiblineaR.ACF}}, \code{\link{LiblineaR::heuristicC}}
+#' @seealso \code{\link{predict.LiblineaR.ACF}}, \code{\link[LiblineaR]{heuristicC}}
 #' 
 #' @examples
 #' data(iris)
@@ -218,35 +218,7 @@
 #'  print(res)
 #' }
 #' 
-#' #############################################
-#' 
-#' # Try regression instead, to predict sepal length on the basis of sepal width and petal width:
-#' 
-#' xTrain=iris[c(1:25,51:75,101:125),2:3]
-#' yTrain=iris[c(1:25,51:75,101:125),1]
-#' xTest=iris[c(26:50,76:100,126:150),2:3]
-#' yTest=iris[c(26:50,76:100,126:150),1]
-#' 
-#' # Center and scale data
-#' s=scale(xTrain,center=TRUE,scale=TRUE)
-#' 
-#' # Estimate MSE in cross-vaidation on a train set
-#' MSECross=LiblineaR.ACF(data = s, target = yTrain, type = 13, cross = 10, svr_eps=.01)
-#' 
-#' # Build the model
-#' m=LiblineaR.ACF(data = s, target = yTrain, type = 13, cross=0, svr_eps=.01)
-#' 
-#' # Test it, after test data scaling:
-#' s2=scale(xTest,attr(s,"scaled:center"),attr(s,"scaled:scale"))
-#' pred=predict(m,s2)$predictions
-#' MSETest=mean((yTest-pred)^2)
-#' 
-#' # Was MSE well estimated?
-#' print(MSETest-MSECross)
-#' 
-#' # Distribution of errors
-#' print(summary(yTest-pred))
-#' 
+#'
 #' 
 #' 
 #' @keywords classif regression multivariate models optimize classes

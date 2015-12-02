@@ -2,5 +2,4 @@
 
 S3method(predict,LiblineaR.ACF)
 export(LiblineaR.ACF)
-export(heuristicC)
 useDynLib(LiblineaR.ACF)

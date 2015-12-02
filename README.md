@@ -1,18 +1,15 @@
 
 # Introduction
 
-LiblineaR.ACF is a wrapper around the LIBLINEAR C/C++ library for machine learning.
-LIBLINEAR is a simple library for solving large-scale regularized linear
-classification and regression.
+LiblineaR.ACF is package that allows fast linear SVM classification by using
+coordinate descent and Accelerated Coordinate Frequencies adaptation.
+It is a wrapper around a modified version of the LIBLINEAR C/C++ library,
+which allows large-scale regularized linear classification.
+ACF is most useful for large data sets and large values of C.
 
-The main feature of LiblineaR.ACF is the Accelerated Coordinate Frequencies
-adaptation..
-This is active only for the L2-regularized L2-loss support vector classification.
-Nonetheless, the other options of LiblineaR has not been touch, so it can be
-used as a direct replacement of LiblineaR.
-
-ACF is most useful for large data sets and large values
-of C.
+The ACF feature is active only for the L2-regularized L1-loss and L2-loss
+support vector classification. Other types of the original LIBLINEAR package
+are not supported.
 
 ---
 
@@ -38,7 +35,7 @@ Software available at www.ini.rub.de/PEOPLE/glasmtbl/code/acf-cd .
 ### Installation
 
 Simply use ```devtools::install_github(repo="aydindemircioglu/LiblineaR.ACF")``` on the R command line,
-make sure you have the latest devtools package installed.
+make sure you have the latest devtools package installed. 
 
 
 ### Usage
@@ -64,14 +61,17 @@ m = LiblineaR.ACF(data = s$x, target = s$y, type = 1, cost = c, bias = FALSE)
 
 All of this software is copyrighted by the list of authors in the DESCRIPTION file of
 the package and subject to the GNU GENERAL PUBLIC LICENSE, Version 2, see the file
-COPYING for details. The LIBLINEAR C/C++ code is copyright Chih-Chung Chang and
-Chih-Jen Lin.
+COPYING for details. The LIBLINEAR C/C++ code is copyright by the LIBLINEAR Project
+(Chih-Chung Chang, Chih-Jen Lin et al.)
 
 
 ### Mathematical Details
 
 The main insight of Accelerated Coordinate Frequencies is that especially on
-larger data sets not every data point is important. Thus, preference should
-be given to imporant points. The random selection method of LIBLINEAR is
+larger data sets not every data point is equally important. Thus, preference should
+be given to important points. The random selection method of LIBLINEAR is
 replaced by a sampling of the distribution that captures the imporatance of
-the points.
+the points. For more information refer to the paper 
+'Accelerated Coordinate Descent with Adaptive Coordinate Frequencies'
+by Tobias Glasmachers and Ürün Dogan.
+

@@ -52,7 +52,7 @@ can be a 1xn matrix or a simple vector.}
 between regularization and correct classification on \code{data}. It can be
 seen as the inverse of a regularization constant. See information on the
 'C' constant in details below. A usually good baseline heuristics to tune
-this constant is provided by the \code{heuristicC} function of this
+this constant is provided by the \code{heuristicC} function in the LiblineaR
 package.}
 
 \item{epsilon}{set tolerance of termination criterion for optimization.
@@ -270,7 +270,7 @@ Journal of Machine Learning Research 9(2008), 1871-1874.\cr
 }
 }
 \seealso{
-\code{\link{predict.LiblineaR.ACF}}, \code{\link{heuristicC}}
+\code{\link{predict.LiblineaR.ACF}}, \code{\link{LiblineaR::heuristicC}}
 }
 \keyword{classes}
 \keyword{classif}
