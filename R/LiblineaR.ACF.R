@@ -30,14 +30,11 @@
 #' @param target a response vector for prediction tasks with one value for 
 #'   each of the n rows of \code{data}. For classification, the values 
 #'   correspond to class labels and can be a 1xn matrix, a simple vector or a 
-#'   factor. For regression, the values correspond to the values to predict, and
-#'   can be a 1xn matrix or a simple vector.
+#'   factor. 
 #' @param type \code{LiblineaR} can produce 10 types of (generalized) linear 
 #'   models, by combining several types of loss functions and regularization 
-#'   schemes. The regularization can be L1 or L2, and the losses can be the
-#'   regular L2-loss for SVM (hinge loss), L1-loss for SVM, or the logistic loss
-#'   for logistic regression. The default value for \code{type} is 0. See
-#'   details below. Valid options are:
+#'   schemes. The regularization is L2, and the losses can be the regular L2-loss 
+#'   or L1-loss. The default value for \code{type} is 1. Valid options are:
 #'   \describe{
 #'     \item{for multi-class classification}{
 #'       \itemize{
@@ -70,7 +67,7 @@
 #' @param wi a named vector of weights for the different classes, used for
 #'   asymmetric class sizes. Not all factor levels have to be supplied (default
 #'   weight: 1). All components have to be named according to the corresponding
-#'   class label. Not used in regression mode.
+#'   class label. 
 #' @param cross if an integer value k>0 is specified, a k-fold cross validation
 #'   on \code{data} is performed to assess the quality of the model via a
 #'   measure of the accuracy. Note that this metric might not be appropriate if
@@ -86,13 +83,13 @@
 #'   error if both are present. Other extra parameters are ignored.
 #' 
 #' @return
-#' 	If \code{cross}>0, the average accuracy (classification) or mean square error (regression) computed over \code{cross} runs of cross-validation is returned.\cr\cr
+#' 	If \code{cross}>0, the average accuracy (classification) computed over \code{cross} runs of cross-validation is returned.\cr\cr
 #' Otherwise, an object of class \code{"LiblineaR"} containing the fitted model is returned, including:
 #' \item{TypeDetail}{A string decsribing the type of model fitted, as determined by \code{type}.}
 #' \item{Type}{An integer corresponding to \code{type}.}
-#' \item{W}{A matrix with the model weights. If \code{bias} is TRUE, \code{W} contains p+1 columns, the last being the bias term. The columns are named according to the names of \code{data}, if provided, or \code{"Wx"} where \code{"x"} ranges from 1 to the number of dimensions. The bias term is named \code{"Bias"}.If the number of classes is 2, or if in regression mode rather than classification, the matrix only has one row. If the number of classes is k>2 (classification), it has k rows. Each row i corresponds then to a linear model discriminating between class i and all the other classes. If there are more than 2 classes, rows are named according to the class i which is opposed to the other classes.}
+#' \item{W}{A matrix with the model weights. If \code{bias} is TRUE, \code{W} contains p+1 columns, the last being the bias term. The columns are named according to the names of \code{data}, if provided, or \code{"Wx"} where \code{"x"} ranges from 1 to the number of dimensions. The bias term is named \code{"Bias"}.If the number of classes is 2, the matrix only has one row. If the number of classes is k>2 (classification), it has k rows. Each row i corresponds then to a linear model discriminating between class i and all the other classes. If there are more than 2 classes, rows are named according to the class i which is opposed to the other classes.}
 #' \item{Bias}{TRUE or FALSE, according to the value of \code{bias}}
-#' \item{ClassNames}{A vector containing the class names. This entry is not returned in case of regression models.}
+#' \item{ClassNames}{A vector containing the class names.}
 #' 
 #' @references
 #' 	\itemize{
@@ -202,7 +199,7 @@
 #'
 #' 
 #' 
-#' @keywords classif regression multivariate models optimize classes
+#' @keywords classification multivariate models optimize classes
 #'
 #' @export
 

@@ -4,9 +4,7 @@ Version: 1.94-2
 Author: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>; 
 	Tobias Glasmachers <tobias.glasmachers@ini.rub.de>;
 	Urun Dogan <urundogan@gmail.com>
-Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>;
-	Tobias Glasmachers <tobias.glasmachers@ini.rub.de>;
-	Urun Dogan <urundogan@gmail.com>
+Maintainer: Aydin Demircioglu <aydin.demircioglu@ini.rub.de>
 Description: Solving the linear SVM problem with coordinate descent
     is very efficient and is implemented in one of the most often used packages,
     LIBLINEAR (available at http://www.csie.ntu.edu.tw/~cjlin/liblinear). 
