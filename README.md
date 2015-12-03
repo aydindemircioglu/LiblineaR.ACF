@@ -1,10 +1,10 @@
 
 # Introduction
 
-LiblineaR.ACF is package that allows fast linear SVM classification by using
-coordinate descent and Accelerated Coordinate Frequencies adaptation.
-It is a wrapper around a modified version of the LIBLINEAR C/C++ library,
-which allows large-scale regularized linear classification.
+The LiblineaR.ACF package provides fast linear support vector machine training
+through coordinate descent with the Accelerated Coordinate Frequencies adaptation.
+It is a wrapper around a modified version of the LIBLINEAR C/C++ library
+for large-scale regularized linear classification.
 ACF is most useful for large data sets and large values of C.
 
 The ACF feature is active only for the L2-regularized L1-loss and L2-loss
@@ -65,13 +65,12 @@ COPYING for details. The LIBLINEAR C/C++ code is copyright by the LIBLINEAR Proj
 (Chih-Chung Chang, Chih-Jen Lin et al.)
 
 
-### Mathematical Details
+### Working Principle
 
 The main insight of Accelerated Coordinate Frequencies is that especially on
 larger data sets not every data point is equally important. Thus, preference should
-be given to important points. The random selection method of LIBLINEAR is
-replaced by a sampling of the distribution that captures the imporatance of
-the points. For more information refer to the paper 
-'Accelerated Coordinate Descent with Adaptive Coordinate Frequencies'
+be given to important points. The uniform random selection method of LIBLINEAR is
+replaced by sampling from a distribution that captures the importance of points,
+estimated online based on optimization progress. For more information refer to the
+paper 'Accelerated Coordinate Descent with Adaptive Coordinate Frequencies'
 by Tobias Glasmachers and Ürün Dogan.
-
