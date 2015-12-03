@@ -2,12 +2,12 @@
 % Please edit documentation in R/LiblineaR.ACF.R
 \name{LiblineaR.ACF}
 \alias{LiblineaR.ACF}
-\title{Linear predictive models estimation based on the LIBLINEAR C/C++ Library.}
+\title{Linear predictive models estimation with Online Adaptation of Coordinate
+Frequencies based on the LIBLINEAR C/C++ Library.}
 \usage{
 LiblineaR.ACF(data, target, type = 0, cost = 1, epsilon = 0.01,
-  svr_eps = NULL, bias = TRUE, wi = NULL, cross = 0,
-  change_rate = 0.2, pref_min = 0.05, pref_max = 20, max_iter = 1000,
-  verbose = FALSE, ...)
+  bias = TRUE, wi = NULL, cross = 0, change_rate = 0.2,
+  pref_min = 0.05, pref_max = 20, max_iter = 1000, verbose = FALSE, ...)
 }
 \arguments{
 \item{data}{a nxp data matrix. Each row stands for an example (sample,
@@ -29,21 +29,9 @@ can be a 1xn matrix or a simple vector.}
   \describe{
     \item{for multi-class classification}{
       \itemize{
-        \item 0 -- L2-regularized logistic regression (primal)
         \item 1 -- L2-regularized L2-loss support vector classification (dual)
-        \item 2 -- L2-regularized L2-loss support vector classification (primal)
         \item 3 -- L2-regularized L1-loss support vector classification (dual)
         \item 4 -- support vector classification by Crammer and Singer
-        \item 5 -- L1-regularized L2-loss support vector classification
-        \item 6 -- L1-regularized logistic regression
-        \item 7 -- L2-regularized logistic regression (dual)
-      }
-    }
-    \item{for regression}{
-      \itemize{
-        \item 11 -- L2-regularized L2-loss support vector regression (primal)
-        \item 12 -- L2-regularized L2-loss support vector regression (dual)
-        \item 13 -- L2-regularized L1-loss support vector regression (dual)
       }
     }
   }}
@@ -58,33 +46,15 @@ package.}
 \item{epsilon}{set tolerance of termination criterion for optimization.
   If \code{NULL}, the LIBLINEAR defaults are used, which are:
   \describe{
-    \item{if \code{type} is 0, 2, 5 or 6}{\code{epsilon}=0.01}
-    \item{if \code{type} is 1, 3, 4, 7, 12 or 13}{\code{epsilon}=0.1}
+    \item{if \code{type} is 1, 3 or 4}{\code{epsilon}=0.1}
   }
 
   % Watch out, below: in fact, \eqn{LaTeX}{ascii} is counter-intuitive.
   % the man pages in terminal mode are extracted from LaTeX argument, not the ascii argument !
 
   The meaning of \code{epsilon} is as follows:
-  \describe{
-        \item{if \code{type} is 0 or 2:}{
-                  \eqn{|f'(w)|_{2} \le \code{epsilon} \times \min (pos,neg) / l \times |f'(w_{0})|_{2}}{|f'(w)|_2 \le  epsilon * min(pos,neg) / l *|f'(w0)|_2},
-                  where f is the primal function and pos/neg are # of positive/negative data (default 0.01)}
-        \item{if \code{type} is 11:}{
-                  \eqn{|f'(w)|_{2} \le \code{epsilon} \times |f'(w_{0})|_{2},}{|f'(w)|_2 \le epsilon * |f'(w0)|_2,}
-                  where f is the primal function (default 0.001)}
-     \item{if \code{type} is 1, 3, 4 or 7:}{
            Dual maximal violation \eqn{\le \code{epsilon}}{\le epsilon}
            (default 0.1)}
-     \item{if \code{type} is 5 or 6:}{
-                  \eqn{|f'(w)|_\infty \le \code{epsilon}\times \min(pos,neg)/l\ |f'(w_{0})|_\infty,}{|f'(w)|_inf \le epsilon * min(pos,neg) / l*|f'(w0)|_inf,}
-                  where f is the primal function (default 0.01)}
-     \item{if \code{type} is 12 or 13:}{
-                  \eqn{|f'(\alpha)|_1 \le \code{epsilon}\times |f'(\alpha_{0})|_1,}{|f'(alpha)|_1 \le epsilon * |f'(alpha0)|_1,}
-                  where f is the dual function (default 0.1)}
-    }}
-
-\item{svr_eps}{set tolerance margin (epsilon) in regression loss function of SVR. Not used for classification methods.}
 
 \item{bias}{if \code{bias} is \code{TRUE} (default), instances of \code{data} becomes [\code{data}; 1].}
 
@@ -123,19 +93,26 @@ Otherwise, an object of class \code{"LiblineaR"} containing the fitted model is 
 \item{ClassNames}{A vector containing the class names. This entry is not returned in case of regression models.}
 }
 \description{
-\code{LiblineaR} allows the estimation of predictive linear models for
-classification and regression, such as L1- or L2-regularized logistic
-regression, L1- or L2-regularized L2-loss support vector classification,
-L2-regularized L1-loss support vector classification and multi-class support
-vector classification. It also supports L2-regularized support vector regression
-(with L1- or L2-loss). The estimation of the models is particularly fast as
-compared to other libraries. The implementation is based on the LIBLINEAR C/C++
-library for machine learning.
+\code{LiblineaR.ACF} is a modification of the LiblineaR package that
+uses the idea of adaptive coordinate frequencies (ACF) method.
+Solving the linear SVM problem with coordinate descent
+is very efficient and is implemented in one of the most often used packages,
+LIBLINEAR (available at http://www.csie.ntu.edu.tw/~cjlin/liblinear).
+It has been shown that the uniform selection of coordinates can be
+accelerated by using an online adaptation of coordinate frequencies (ACF).
+This package implements ACF and is based on LIBLINEAR as well as
+the LiblineaR package (https://cran.r-project.org/package=LiblineaR).
+It currently supports L2-regularized L1-loss as well as L2-loss linear SVM.
+Similar to LIBLINEAR multi-class classification (one-vs-the rest, and
+Crammer & Singer method) and cross validation for model selection is
+supported. The training of the models based on ACF is much faster than
+standard LIBLINEAR on many problems.
 }
 \details{
 For details for the implementation of LIBLINEAR, see the README file of the
 original c/c++ LIBLINEAR library at
 \url{http://www.csie.ntu.edu.tw/~cjlin/liblinear}.
+The ACF code can be found
 }
 \note{
 Classification models usually perform better if each dimension of the data is first centered and scaled.
@@ -157,7 +134,7 @@ yTest=y[-train]
 s=scale(xTrain,center=TRUE,scale=TRUE)
 
 # Find the best model with the best cost parameter via 10-fold cross-validations
-tryTypes=c(0:7)
+tryTypes=c(1,3,4)
 tryCosts=c(1000,1,0.001)
 bestCost=NA
 bestAcc=0
@@ -224,40 +201,13 @@ if(require(SparseM)){
  res=table(p$predictions,yTest)
  print(res)
 }
-
-#############################################
-
-# Try regression instead, to predict sepal length on the basis of sepal width and petal width:
-
-xTrain=iris[c(1:25,51:75,101:125),2:3]
-yTrain=iris[c(1:25,51:75,101:125),1]
-xTest=iris[c(26:50,76:100,126:150),2:3]
-yTest=iris[c(26:50,76:100,126:150),1]
-
-# Center and scale data
-s=scale(xTrain,center=TRUE,scale=TRUE)
-
-# Estimate MSE in cross-vaidation on a train set
-MSECross=LiblineaR.ACF(data = s, target = yTrain, type = 13, cross = 10, svr_eps=.01)
-
-# Build the model
-m=LiblineaR.ACF(data = s, target = yTrain, type = 13, cross=0, svr_eps=.01)
-
-# Test it, after test data scaling:
-s2=scale(xTest,attr(s,"scaled:center"),attr(s,"scaled:scale"))
-pred=predict(m,s2)$predictions
-MSETest=mean((yTest-pred)^2)
-
-# Was MSE well estimated?
-print(MSETest-MSECross)
-
-# Distribution of errors
-print(summary(yTest-pred))
 }
 \author{
-Thibault Helleputte \email{thibault.helleputte@dnalytics.com} and\cr
+Aydin Demircioglu \email{aydin.demircioglu@ini.rub.de}
+  Based on LiblineaR package by Thibault Helleputte \email{thibault.helleputte@dnalytics.com} and\cr
   Pierre Gramme \email{pierre.gramme@dnalytics.com}.\cr
   Based on C/C++-code by Chih-Chung Chang and Chih-Jen Lin
+  Based on C/C++-code by Tobias Glasmachers and Urun Dogan
 }
 \references{
 \itemize{
@@ -270,7 +220,7 @@ Journal of Machine Learning Research 9(2008), 1871-1874.\cr
 }
 }
 \seealso{
-\code{\link{predict.LiblineaR.ACF}}, \code{\link{LiblineaR::heuristicC}}
+\code{\link{predict.LiblineaR.ACF}}, \code{\link[LiblineaR]{heuristicC}}
 }
 \keyword{classes}
 \keyword{classif}

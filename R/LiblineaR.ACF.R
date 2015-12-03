@@ -64,24 +64,8 @@
 #'   % the man pages in terminal mode are extracted from LaTeX argument, not the ascii argument !
 #'   
 #'   The meaning of \code{epsilon} is as follows:
-#'   \describe{
-#' 	    \item{if \code{type} is 0 or 2:}{
-#' 			      \eqn{|f'(w)|_{2} \le \code{epsilon} \times \min (pos,neg) / l \times |f'(w_{0})|_{2}}{|f'(w)|_2 \le  epsilon * min(pos,neg) / l *|f'(w0)|_2},
-#' 			      where f is the primal function and pos/neg are # of positive/negative data (default 0.01)}
-#' 	    \item{if \code{type} is 11:}{
-#' 			      \eqn{|f'(w)|_{2} \le \code{epsilon} \times |f'(w_{0})|_{2},}{|f'(w)|_2 \le epsilon * |f'(w0)|_2,}
-#' 			      where f is the primal function (default 0.001)}
-#'      \item{if \code{type} is 1, 3, 4 or 7:}{
 #'            Dual maximal violation \eqn{\le \code{epsilon}}{\le epsilon} 
-#'            (default 0.1)}
-#'      \item{if \code{type} is 5 or 6:}{
-#' 			      \eqn{|f'(w)|_\infty \le \code{epsilon}\times \min(pos,neg)/l\ |f'(w_{0})|_\infty,}{|f'(w)|_inf \le epsilon * min(pos,neg) / l*|f'(w0)|_inf,}
-#' 			      where f is the primal function (default 0.01)}
-#'      \item{if \code{type} is 12 or 13:}{
-#' 			      \eqn{|f'(\alpha)|_1 \le \code{epsilon}\times |f'(\alpha_{0})|_1,}{|f'(alpha)|_1 \le epsilon * |f'(alpha0)|_1,}
-#' 			      where f is the dual function (default 0.1)}
-#' 	}
-#' @param svr_eps set tolerance margin (epsilon) in regression loss function of SVR. Not used for classification methods.
+#'            (default 0.1)
 #' @param bias if \code{bias} is \code{TRUE} (default), instances of \code{data} becomes [\code{data}; 1].
 #' @param wi a named vector of weights for the different classes, used for
 #'   asymmetric class sizes. Not all factor levels have to be supplied (default
@@ -147,7 +131,7 @@
 #' s=scale(xTrain,center=TRUE,scale=TRUE)
 #' 
 #' # Find the best model with the best cost parameter via 10-fold cross-validations
-#' tryTypes=c(0:7)
+#' tryTypes=c(1,3,4)
 #' tryCosts=c(1000,1,0.001)
 #' bestCost=NA
 #' bestAcc=0
@@ -223,7 +207,7 @@
 #' @export
 
 ### Implementation ####
-LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL, bias=TRUE, wi=NULL, cross=0, 
+LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, bias=TRUE, wi=NULL, cross=0, 
     change_rate = 0.2, pref_min = 0.05, pref_max = 20.0, max_iter = 1000, verbose=FALSE, ...) {
 	# <Arg preparation>
   
@@ -277,14 +261,6 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL
 	if(is.null(epsilon) || epsilon<0){
 		# Will use LIBLINEAR default value for epsilon
 		epsilon = -1
-	}
-
-	# Regression margin (epsilon)
-	if(is.null(svr_eps) || svr_eps<0){
-		svr_eps = 0.1
-		# This default value may not make sense (depends on expected precision)
-		if(isRegression)
-			warning("No value provided for svr_eps. Using default of 0.1")
 	}
 	
 	# Target
@@ -390,7 +366,7 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, svr_eps=NULL
 			as.integer(type),
 			as.double(cost),
 			as.double(epsilon),
-			as.double(svr_eps),
+
 			as.integer(nrWi),
 			as.double(Wi),
 			as.integer(WiLabels),

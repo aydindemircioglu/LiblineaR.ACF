@@ -5,9 +5,9 @@ vers <- paste("R package version", meta$Version)
 
 citEntry(entry="Manual",
 	title = "LiblineaR.ACF: Linear Classification with Online Adaptation of Coordinate Frequencies",
-	author = personList(as.person("Tobias Glasmachers", as.person("Urun Dogan", as.person("Aydin Demircioglu")),
+	author = personList(as.person("Tobias Glasmachers"), as.person("Urun Dogan"), as.person("Aydin Demircioglu")),
 	year = year,
 	note = vers,
-	textVersion =
-	paste("Tobias Glasmachers, Urun Dogan, Aydin Demircioglu","(",year,"). LiblineaR.ACF: Linear Classification with Online Adaptation of Coordinate Frequencies.",vers, ".", sep="")
+	textVersion = 
+	paste("Tobias Glasmachers, Urun Dogan, Aydin Demircioglu ","(",year,"). LiblineaR.ACF: Linear Classification with Online Adaptation of Coordinate Frequencies.",vers, ".", sep="")
 )

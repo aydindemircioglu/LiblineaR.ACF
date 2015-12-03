@@ -14,7 +14,7 @@
 
 void print_null(const char *s) {}
 
-void setup_params(int *type, double *cost, double *epsilon, double* svr_eps, int *nrWi, double *Wi, int *WiLabels, int *cross, int *verbose);
+void setup_params(int *type, double *cost, double *epsilon, int *nrWi, double *Wi, int *WiLabels, int *cross, int *verbose);
 void setup_problem(double *X, double *Y, int *nbSamples, int *nbDim, int *sparse, int *rowindex, int *colindex, 
                  double *bi, int *max_iter, double *change_rate, double *pref_min, double *pref_max, int *verbose);
 double do_cross_validation();
@@ -34,12 +34,12 @@ int nr_fold;
  *
  */
 void trainLinear(double *W_ret, int* labels_ret, double *X, double *Y, int *nbSamples, int *nbDim, int *sparse, int *rowindex, int *colindex, 
-                 double *bi, int *type, double *cost, double *epsilon, double* svr_eps, int *nrWi, double *Wi, int *WiLabels, int *cross, 
+                 double *bi, int *type, double *cost, double *epsilon, int *nrWi, double *Wi, int *WiLabels, int *cross, 
                  int *max_iter, double *change_rate, double *pref_min, double *pref_max, int *verbose)
 {
 	const char *error_msg;
 	
-	setup_params(type, cost, epsilon, svr_eps, nrWi, Wi, WiLabels, cross, verbose);
+	setup_params(type, cost, epsilon, nrWi, Wi, WiLabels, cross, verbose);
 	setup_problem(X, Y, nbSamples, nbDim, sparse, rowindex, colindex, bi, max_iter, change_rate, pref_min, pref_max, verbose);
 
 	if(*verbose)
@@ -138,7 +138,7 @@ double do_cross_validation()
  * Author: Pierre Gramme
  *
  */
-void setup_params(int *type, double *cost, double *epsilon, double* svr_eps, int *nrWi, double *Wi, int *WiLabels, int *cross, int *verbose)
+void setup_params(int *type, double *cost, double *epsilon, int *nrWi, double *Wi, int *WiLabels, int *cross, int *verbose)
 {
 	if(*verbose){
 		Rprintf("ARGUMENTS SETUP\n");
@@ -149,7 +149,6 @@ void setup_params(int *type, double *cost, double *epsilon, double* svr_eps, int
 	// ARGUMENTS SETUP
 	param.solver_type = *type;
 	param.C = *cost;
-	param.p = *svr_eps;
 	param.eps = *epsilon;
 	//Note: bias will be set in setup_problem(...)
 	param.nr_weight = *nrWi;
