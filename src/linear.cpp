@@ -806,12 +806,12 @@ static void solve_l2r_l1l2_svc(
 	Rprintf ("maxiter: %d\n", max_iter);
 	Rprintf ("prob->pref_min: %f\n", prob->pref_min);
 	Rprintf ("prob->pref_max: %f\n", prob->pref_max);
-	Rprintf ("prob->change_rate: %f\n", prob->change_rate);*/
-	
+	Rprintf ("prob->change_rate: %f\n", prob->change_rate);
+*/	
 	int *index = new int[2*l];
 	double *alpha = new double[l];
 	schar *y = new schar[l];
-	unsigned long long steps = 0;
+	unsigned long steps = 0;
 
 	// prepare preferences for scheduling
 	double* pref = new double[l];
@@ -1283,7 +1283,7 @@ void solve_l2r_lr_dual(const problem *prob, double *w, double eps, double Cp, do
 	double innereps = 1e-2; 
 	double innereps_min = min(1e-8, eps);
 	double upper_bound[3] = {Cn, 0, Cp};
-	unsigned long long steps = 0;
+	unsigned long steps = 0;
 
 	for(i=0; i<l; i++)
 	{
@@ -2562,6 +2562,12 @@ extern "C" void cross_validation(const problem *prob, const parameter *param, in
 		subprob.l = l-(end-begin);
 		subprob.x = Malloc(struct feature_node*,subprob.l);
 		subprob.y = Malloc(double,subprob.l);
+        
+        //take care of acf parameter
+        subprob.max_iter = prob->max_iter;
+        subprob.pref_max = prob->pref_max;
+        subprob.pref_min = prob->pref_min;
+        subprob.change_rate = prob->change_rate;
 
 		k=0;
 		for(j=0;j<begin;j++)

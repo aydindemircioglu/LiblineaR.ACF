@@ -125,7 +125,7 @@
 #' # Center and scale data
 #' s=scale(xTrain,center=TRUE,scale=TRUE)
 #' 
-#' # Find the best model with the best cost parameter via 10-fold cross-validations
+#' # Find the best model with the best cost parameter via 3-fold cross-validations
 #' tryTypes=c(1,3,4)
 #' tryCosts=c(1000,1,0.001)
 #' bestCost=NA
@@ -135,7 +135,7 @@
 #' for(ty in tryTypes){
 #' 	for(co in tryCosts){
 #' 		acc=LiblineaR.ACF(data=s,target=yTrain,type=ty,cost=co,
-#'				bias=TRUE,cross=5,verbose=FALSE)
+#'				bias=TRUE,cross=3,verbose=FALSE)
 #' 		cat("Results for C=",co," : ",acc," accuracy.\n",sep="")
 #' 		if(acc>bestAcc){
 #' 			bestCost=co
