@@ -19,7 +19,7 @@ each of the n rows of \code{data}. For classification, the values
 correspond to class labels and can be a 1xn matrix, a simple vector or a 
 factor.}
 
-\item{type}{\code{LiblineaR} can produce 10 types of (generalized) linear 
+\item{type}{\code{LiblineaR} can produce several types of (generalized) linear 
 models, by combining several types of loss functions and regularization 
 schemes. The regularization is L2, and the losses can be the regular L2-loss 
 or L1-loss. The default value for \code{type} is 1. Valid options are:
@@ -45,9 +45,6 @@ If \code{NULL}, the LIBLINEAR defaults are used, which are:
 \describe{
   \item{if \code{type} is 1, 3 or 4}{\code{epsilon}=0.1}
 }
-
-% Watch out, below: in fact, \eqn{LaTeX}{ascii} is counter-intuitive.
-% the man pages in terminal mode are extracted from LaTeX argument, not the ascii argument !
 
 The meaning of \code{epsilon} is as follows:
          Dual maximal violation \eqn{\le \code{epsilon}}{\le epsilon} 
@@ -109,7 +106,8 @@ standard LIBLINEAR on many problems.
 For details for the implementation of LIBLINEAR, see the README file of the
 original c/c++ LIBLINEAR library at
 \url{http://www.csie.ntu.edu.tw/~cjlin/liblinear}.
-The ACF code can be found
+The ACF code can be found at
+\url{http://www.ini.rub.de/PEOPLE/glasmtbl/code/acf-cd}.
 }
 \note{
 Classification models usually perform better if each dimension of the data is first centered and scaled.

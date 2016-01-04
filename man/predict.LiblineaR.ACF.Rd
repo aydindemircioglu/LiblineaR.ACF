@@ -2,10 +2,9 @@
 % Please edit documentation in R/predict.R
 \name{predict.LiblineaR.ACF}
 \alias{predict.LiblineaR.ACF}
-\title{Predictions with LiblineaR model}
+\title{Predictions with LiblineaR.ACF model}
 \usage{
-\method{predict}{LiblineaR.ACF}(object, newx, proba = FALSE,
-  decisionValues = FALSE, ...)
+\method{predict}{LiblineaR.ACF}(object, newx, decisionValues = FALSE, ...)
 }
 \arguments{
 \item{object}{Object of class \code{"LiblineaR.ACF"}, created by
@@ -15,31 +14,20 @@
 transformed to a n x 1 matrix. A sparse matrix (from SparseM package) will
 also work.}
 
-\item{proba}{Logical indicating whether class probabilities should be
-computed and returned. Only possible if the model was fitted with
-\code{type}=0, \code{type}=6 or \code{type}=7, i.e. a Logistic Regression.
-Default is \code{FALSE}.}
-
 \item{decisionValues}{Logical indicating whether model decision values should
-be computed and returned. Only possible for classification models
-(\code{type}<10). Default is \code{FALSE}.}
+be computed and returned. Default is \code{FALSE}.}
 
 \item{...}{Currently not used}
 }
 \value{
 By default, the returned value is a list with a single entry:
-\item{predictions}{A vector of predicted labels (or values for regression).}
-If \code{proba} is set to \code{TRUE}, and the model is a logistic
-regression, an additional entry is returned:
-\item{probabilities}{An n x k matrix (k number of classes) of the class
-  probabilities. The columns of this matrix are named after class labels.}
-If \code{decisionValues} is set to \code{TRUE}, and the model is not a
-regression model, an additional entry is returned:
+\item{predictions}{A vector of predicted labels.}
+If \code{decisionValues} is set to \code{TRUE}, an additional entry is returned:
 \item{decisionValues}{An n x k matrix (k number of classes) of the model
   decision values. The columns of this matrix are named after class labels.}
 }
 \description{
-The function applies a model (classification or regression) produced by the \code{LiblineaR.ACF} function to every row of a
+The function applies a classification model produced by the \code{LiblineaR.ACF} function to every row of a
 data matrix and returns the model predictions.
 }
 \note{
@@ -51,6 +39,7 @@ If the data on which the model has been fitted have been centered
 \author{
 Thibault Helleputte \email{thibault.helleputte@dnalytics.com} and 
   Pierre Gramme \email{pierre.gramme@dnalytics.com}.\cr 
+  Modified by Aydin Demircioglu.\cr
   Based on C/C++-code by Chih-Chung Chang and Chih-Jen Lin
 }
 \references{
@@ -71,5 +60,4 @@ Journal of Machine Learning Research 9(2008), 1871-1874.\cr
 \keyword{models}
 \keyword{multivariate}
 \keyword{optimize}
-\keyword{regression}
 
