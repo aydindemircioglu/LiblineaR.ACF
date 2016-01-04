@@ -1,7 +1,7 @@
 ### Documentation ####
-#' Predictions with LiblineaR model
+#' Predictions with LiblineaR.ACF model
 #' 
-#' The function applies a model (classification or regression) produced by the \code{LiblineaR.ACF} function to every row of a
+#' The function applies a classification model produced by the \code{LiblineaR.ACF} function to every row of a
 #' data matrix and returns the model predictions.
 #' 
 #' @param object Object of class \code{"LiblineaR.ACF"}, created by
@@ -9,23 +9,13 @@
 #' @param newx An n x p matrix containing the new input data. A vector will be
 #'   transformed to a n x 1 matrix. A sparse matrix (from SparseM package) will
 #'   also work.
-#' @param proba Logical indicating whether class probabilities should be
-#'   computed and returned. Only possible if the model was fitted with
-#'   \code{type}=0, \code{type}=6 or \code{type}=7, i.e. a Logistic Regression.
-#'   Default is \code{FALSE}.
 #' @param decisionValues Logical indicating whether model decision values should
-#'   be computed and returned. Only possible for classification models
-#'   (\code{type}<10). Default is \code{FALSE}.
+#'   be computed and returned. Default is \code{FALSE}.
 #' @param ... Currently not used
 #' 
 #' @return 	By default, the returned value is a list with a single entry:
-#' \item{predictions}{A vector of predicted labels (or values for regression).}
-#' If \code{proba} is set to \code{TRUE}, and the model is a logistic
-#' regression, an additional entry is returned:
-#' \item{probabilities}{An n x k matrix (k number of classes) of the class
-#'   probabilities. The columns of this matrix are named after class labels.}
-#' If \code{decisionValues} is set to \code{TRUE}, and the model is not a
-#' regression model, an additional entry is returned:
+#' \item{predictions}{A vector of predicted labels.}
+#' If \code{decisionValues} is set to \code{TRUE}, an additional entry is returned:
 #' \item{decisionValues}{An n x k matrix (k number of classes) of the model
 #'   decision values. The columns of this matrix are named after class labels.}
 #' 
@@ -41,6 +31,7 @@
 #' 
 #' @author Thibault Helleputte \email{thibault.helleputte@@dnalytics.com} and 
 #'   Pierre Gramme \email{pierre.gramme@@dnalytics.com}.\cr 
+#'   Modified by Aydin Demircioglu.\cr
 #'   Based on C/C++-code by Chih-Chung Chang and Chih-Jen Lin
 #' 
 #' @note If the data on which the model has been fitted have been centered
@@ -50,12 +41,12 @@
 #' 
 #' @seealso \code{\link{LiblineaR.ACF}}
 #' 
-#' @keywords classif regression multivariate models optimize classes
+#' @keywords classif multivariate models optimize classes
 #'
 #' @export
 
 ### Implementation ####
-predict.LiblineaR.ACF<-function(object, newx, proba=FALSE, decisionValues=FALSE,...){
+predict.LiblineaR.ACF<-function(object, newx, decisionValues=FALSE,...){
 
 	# <Arg preparation>
 	
@@ -81,26 +72,12 @@ predict.LiblineaR.ACF<-function(object, newx, proba=FALSE, decisionValues=FALSE,
 	if(!object$Type %in% c(0:7,11:13)){
 		stop("Invalid model object: Wrong value for 'type'. Must be an integer between 0 and 7  or between 11 and 13 included.\n")
 	}
-	isRegression = object$Type>=11
 	
 	# Bias
 	b = if(object$Bias) 1 else -1
 	
 	# Returned probabilities default storage preparation
 	Probabilities=matrix(data=-1)
-
-	# Proba allowed?
-	if(proba){
-		if(!object$Type %in% c(0,6,7)){
-			warning("Computing probabilities is only supported for Logistic Regressions (LiblineaR 'type' 0, 6 or 7).\n",
-							"Accordingly, 'proba' was set to FALSE.")
-			proba=FALSE
-		}
-		else{
-			# Returned probabilities storage preparation 
-			Probabilities=matrix(ncol=n*length(object$ClassNames),nrow=1,data=0)
-		}
-	}
 
 	# Returned labels storage preparation
 	Y=matrix(ncol=n,nrow=1,data=0)
@@ -110,14 +87,7 @@ predict.LiblineaR.ACF<-function(object, newx, proba=FALSE, decisionValues=FALSE,
 
 	# Returned decision values storage preparation
 	if(decisionValues) {
-		if(isRegression){
-			warning("Computing decision values is only supported for classification (LiblineaR 'type' between 0 and 7).\n",
-							"Accordingly, 'decisionValues' was set to FALSE.")
-			decisionValues=FALSE
-		}
-		else{
-			DecisionValues=matrix(ncol=n*length(object$ClassNames),nrow=1,data=0)
-		}
+        DecisionValues=matrix(ncol=n*length(object$ClassNames),nrow=1,data=0)
 	}
 	
 	# Codebook for labels
@@ -127,6 +97,8 @@ predict.LiblineaR.ACF<-function(object, newx, proba=FALSE, decisionValues=FALSE,
 	# </Arg preparation>
 	
 	# as.double(t(X)) corresponds to rewrite X as a nxp-long vector instead of a n-rows and p-cols matrix. Rows of X are appended one at a time.
+	# as we only deal with classification, we put probA always to false
+	proba = FALSE
 	
 	ret <- .C(
 		"predictLinear",
@@ -152,15 +124,7 @@ predict.LiblineaR.ACF<-function(object, newx, proba=FALSE, decisionValues=FALSE,
 		)
 	
 	result=list()
-	if(isRegression)
-		result$predictions=ret[[1]]
-	else
-		result$predictions=object$ClassNames[as.integer(ret[[1]])]
-
-	if(proba){
-		result$probabilities=matrix(ncol=length(object$ClassNames),nrow=n,data=ret[[7]],byrow=TRUE)
-		colnames(result$probabilities)=object$ClassNames
-	}
+    result$predictions=object$ClassNames[as.integer(ret[[1]])]
 	
 	if(decisionValues){
 		result$decisionValues=matrix(ncol=length(object$ClassNames),nrow=n,data=ret[[5]],byrow=TRUE)

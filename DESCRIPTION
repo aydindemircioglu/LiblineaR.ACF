@@ -21,7 +21,7 @@ Copyright: The LIBLINEAR Project;
     Thibault Helleputte <thibault.helleputte@dnalytics.com>;
     Pierre Gramme <pierre.gramme@dnalytics.com>
 License: GPL-2
-Date: 2015-12-06
+Date: 2016-01-04
 LazyLoad: yes
 Suggests:
     SparseM,

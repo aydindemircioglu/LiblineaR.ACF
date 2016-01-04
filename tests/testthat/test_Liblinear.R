@@ -2,7 +2,7 @@ context("LIBLINEAR")
 
 
 
-test_that("Liblinear works as expected", {
+test_that("LiblineaR.ACF works as expected (similar to LIBLINEAR)", {
 
     RSquared<-function(pred,true){
         # Pierre Gramme

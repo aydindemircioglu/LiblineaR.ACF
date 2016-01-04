@@ -22,7 +22,8 @@
 #' For details for the implementation of LIBLINEAR, see the README file of the
 #' original c/c++ LIBLINEAR library at
 #' \url{http://www.csie.ntu.edu.tw/~cjlin/liblinear}.
-#' The ACF code can be found 
+#' The ACF code can be found at
+#' \url{http://www.ini.rub.de/PEOPLE/glasmtbl/code/acf-cd}.
 #' 
 #' @param data 	a nxp data matrix. Each row stands for an example (sample,
 #'   point) and each column stands for a dimension (feature, variable). A sparse
@@ -31,7 +32,7 @@
 #'   each of the n rows of \code{data}. For classification, the values 
 #'   correspond to class labels and can be a 1xn matrix, a simple vector or a 
 #'   factor. 
-#' @param type \code{LiblineaR} can produce 10 types of (generalized) linear 
+#' @param type \code{LiblineaR} can produce several types of (generalized) linear 
 #'   models, by combining several types of loss functions and regularization 
 #'   schemes. The regularization is L2, and the losses can be the regular L2-loss 
 #'   or L1-loss. The default value for \code{type} is 1. Valid options are:
@@ -56,9 +57,6 @@
 #'   \describe{
 #'     \item{if \code{type} is 1, 3 or 4}{\code{epsilon}=0.1}
 #'   }
-#'   
-#'   % Watch out, below: in fact, \eqn{LaTeX}{ascii} is counter-intuitive.
-#'   % the man pages in terminal mode are extracted from LaTeX argument, not the ascii argument !
 #'   
 #'   The meaning of \code{epsilon} is as follows:
 #'            Dual maximal violation \eqn{\le \code{epsilon}}{\le epsilon} 
@@ -253,6 +251,8 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, bias=TRUE, w
 	if(!type %in% (which(types!="")-1))
 		stop("Unknown model type ",type,". Expecting one of: ", paste(which(types!="")-1, collapse=", "))
 	isRegression = type>=11
+	if (isRegression) 
+        stop("Internal error. Regression was not allowed. Please contact the maintainer.")
 	
 	# Epsilon
 	if(is.null(epsilon) || epsilon<0){
@@ -271,46 +271,36 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, bias=TRUE, w
 		stop("Number of target elements disagrees with number of data instances.")
 	}
 	
-	if(isRegression) {
-		yC = as.double(target)
-		isMulticlass = FALSE
-		targetLabels = NULL
-		nbClass = 2 # necessary for predict
-		nrWi = 0
-		Wi = NULL
-		WiLabels = NULL
-	} else {
-		if(is.character(target))
-			target = factor(target)
-		
-		# targetLabels are sorted by first occurrence in target ; if target is a factor, targetLabels too, with the same levels.
-		targetLabels = unique(target)
-		nbClass = length(targetLabels)
-		
-		yC = as.integer(target)
-		
-		if (nbClass<2)
-			stop("Wrong number of classes ( < 2 ).")
-		isMulticlass = (nbClass>2) || (nbClass==2 && type==4)
-		
-		# Different class penalties? Default to 1
-		nrWi=nbClass
-		Wi=rep(1,times=nrWi)
-		names(Wi)=as.character(targetLabels)
-		WiLabels=as.integer(targetLabels)
-		
-		if(!is.null(wi)) {
-			if(is.null(names(wi)))
-				stop("wi has to be a named vector!")
-			
-			if( !all(names(Wi)%in% names(wi)) )
-				stop("Mismatch between provided names for 'wi' and class labels.")
-			
-			for(i in 1:length(wi)){
-				Wi[names(wi)[i]]=wi[i]
-			}
-		}
-	}
+    if(is.character(target))
+        target = factor(target)
+    
+    # targetLabels are sorted by first occurrence in target ; if target is a factor, targetLabels too, with the same levels.
+    targetLabels = unique(target)
+    nbClass = length(targetLabels)
+    
+    yC = as.integer(target)
+    
+    if (nbClass<2)
+        stop("Wrong number of classes ( < 2 ).")
+    isMulticlass = (nbClass>2) || (nbClass==2 && type==4)
+    
+    # Different class penalties? Default to 1
+    nrWi=nbClass
+    Wi=rep(1,times=nrWi)
+    names(Wi)=as.character(targetLabels)
+    WiLabels=as.integer(targetLabels)
+    
+    if(!is.null(wi)) {
+        if(is.null(names(wi)))
+            stop("wi has to be a named vector!")
+        
+        if( !all(names(Wi)%in% names(wi)) )
+            stop("Mismatch between provided names for 'wi' and class labels.")
+        
+        for(i in 1:length(wi)){
+            Wi[names(wi)[i]]=wi[i]
+        }
+    }
 	
 	# Cross-validation?
 	if(cross<0){
@@ -381,12 +371,11 @@ LiblineaR.ACF<-function(data, target, type=0, cost=1, epsilon=0.01, bias=TRUE, w
 			)
 	
 	if(cross==0){
-		labels_ret = if(isRegression) NULL else ret[[2]]
+		labels_ret = ret[[2]]
 		
 		# classNames is a lookup table for conversion between outputs of C code and initial levels of target
 		classNames = {
-			if(isRegression) NULL 
-			else if(is.logical(targetLabels)) as.logical(labels_ret)
+            if(is.logical(targetLabels)) as.logical(labels_ret)
 			else if(is.null(levels(targetLabels))) labels_ret 
 			else factor(levels(targetLabels)[labels_ret], levels=levels(targetLabels))
 		}

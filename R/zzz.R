@@ -35,14 +35,12 @@ LiblineaRACFEnv = new.env(parent = emptyenv())
 		devtools.install.args = "",
 		devtools.name = "Aydin Demircioglu",
 		devtools.desc.author = '"Aydin Demircioglu <aydin.demircioglu@ini.rub.de> [aut, cre]"',
-		devtools.desc.license = "LGPL-3 + file LICENSE",
+		devtools.desc.license = "GPL-2",
 		devtools.desc.suggests = NULL,
 		devtools.desc = list()
 	)
 	toset <- !(names(op.devtools) %in% names(op))
 	if(any(toset)) options(op.devtools[toset])
-
-	#  find_rtools()
 
 	invisible()
 }
